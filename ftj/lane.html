@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="lane.css" />
+</head>
+<body>
+    <nav>
+        <div class="menu">
+          <div class="logo">
+            <a href="home.html">TabJ Detection</a>
+          </div>
+          <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="detect.html">Detect</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+      </nav> 
+      <h1>Detection Dashboard</h1>
+    <!-- Lane and Curve Detection Form -->
+    <form method="POST" action="/set_source" enctype="multipart/form-data">
+        <h2>Lane and Curve Detection</h2>
+        <button type="submit" name="mode" value="lane">Stream Lane and Curve Detection</button>
+        <input type="file" name="video">
+        <button type="submit" name="source" value="upload">Upload Video for Lane Detection</button>
+    </form>
+  <!-- Video Feed -->
+  <img src="{{ url_for('video_feed') }}" width="640" height="480">
+</body>
+</html>

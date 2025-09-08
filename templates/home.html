@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- Website - www.codingnepalweb.com -->
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>de_tect</title>
+    <link rel="stylesheet" href="static/css/home.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"/>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    
+  </head>
+  <body>
+    <nav>
+      <div class="menu">
+        <div class="logo">
+          <a href="{{ url_for('index')}}">de_TECT</a>
+        </div>
+        <ul>
+          <li><a href="{{ url_for('index')}}">Home</a></li>
+          <li><a href="{{ url_for('detect')}}">Detect</a></li>
+          <li><a href="{{ url_for('about')}}">About</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="img"></div>
+    <div class="center">
+      <div class="title">Welcome to de_TECT Realtime Detection</div>
+      <div class="sub_title">You are at the right application for detecting objects, lanes and curves in realtime</div>
+      <div class="btns">
+        <button class="button">
+          <a href="{{ url_for('detect')}}">Get Started</a></button>
+          <button class="button">
+            <a href="{{ url_for('about')}}">Learn more</a></button>
+      </div>
+    </div>
+  </body>
+</html>
+

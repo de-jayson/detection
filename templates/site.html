@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <section id="section 1">
+        <nav class="navbar">
+        <div class="menu">
+          <div class="logo">
+            <a href="home.html">de_TECT</a>
+          </div>
+          <ul>
+            <li><a href="templates/home.html">Home</a></li>
+            <li><a href="templates/detect.html">Detect</a></li>
+            <li><a href="templates/about.html">About</a></li>
+          </ul>
+        </div>
+      </nav>
+      <div class="img"></div>
+      <div class="center">
+        <div class="title">Welcome to de_TECT</div>
+        <div class="sub_title">You are at the right application for detecting objects in realtime</div>
+        <div class="btns">
+          <button class="button">
+            <a href="templates/detect.html">Get Started</a></button>
+            <button class="button">
+              <a href="templates/about.html">Learn more</a></button>
+        </div>
+      </div>
+    </section>
+          detect
+          <section id="section2">  
+            <main class="flex">
+            <div class="card">
+              <h2>Detect Objects</h2>
+              <p> This option helps you to detect objects in real time</p>
+              <p>You can go ahead and click on the button below to continue.</p>
+              <button class="first"><a href="object.html">Object Detection</a></button>
+            </div>
+            <div class="card">
+              <h2>Detect Lanes and curves</h2>
+              <p>This option enables users to navigate their ways on roads by detecting the curvature and lanes</p>
+              <p>You can go ahead and click on the button to continue</p>
+              <button class="first"><a href="lane.html">Lane Detection</a></button>
+            </div>
+        </section> 
+        
+    detection
+    <section id="section3"><h1>Detection Dashboard</h1>
+        
+        <!-- Lane and Curve Detection Form -->
+        <form method="POST" action="/set_source" enctype="multipart/form-data">
+            <h2>Lane and Curve Detection</h2>
+            <button type="submit" name="mode" value="lane">Stream Lane and Curve Detection</button>
+            <input type="file" name="video">
+            <button type="submit" name="source" value="upload">Upload Video for Lane Detection</button>
+        </form>
+        
+        <!-- Object Detection Form -->
+        <form method="POST" action="/set_source" enctype="multipart/form-data">
+            <h2>Object Detection</h2>
+            <button type="submit" name="mode" value="object">Stream Object Detection</button>
+            <input type="file" name="video">
+            <button type="submit" name="source" value="upload">Upload Video for Object Detection</button>
+        </form>
+        
+        <!-- Video Feed -->
+        <img src="{{ url_for('video_feed') }}" width="640" height="480"></section>
+        
+        about
+        <section id="section4">
+            <h2>About Us</h2>
+            <p>Discover our story in providing camping services.</p>
+            <div class="row company-info">
+              <h3>Our Story</h3>
+              <p>Experience the excellence of our camping gear and services, where we have been offering high-quality camping essentials and gear for outdoor enthusiasts for over a decade. Our commitment to quality and customer satisfaction ensures that every adventurer can rely on us for their camping needs.</p>
+            </div>
+            <div class="row mission-vision">
+              <h3>Our Mission</h3>
+              <p>At Camping Gear Experts, our mission is to equip outdoor enthusiasts with top-notch camping gear and essentials that enhance their outdoor experiences. We strive to provide reliable, durable, and innovative products that contribute to memorable adventures and lasting memories.</p>
+              <h3>Our Vision</h3>
+              <p>Our vision is to become the go-to destination for camping enthusiasts, known for our extensive selection of premium camping gear and exceptional customer service. We aspire to inspire and enable people to embrace the beauty of nature and create unforgettable camping experiences.</p>
+            </div>
+            <div class="row team">
+              <h3>Our Team</h3>
+              <ul>
+                <li>Dowuona Daniel - Founder and CEO</li>
+               
+
+              </ul>
+            </div>
+          </section>
+</body>
+</html>

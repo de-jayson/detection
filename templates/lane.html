@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lane Detection - Enhanced System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        
+        .nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .video-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .video-container {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .controls-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            height: fit-content;
+        }
+        
+        .controls-section h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .control-group label {
+            display: block;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+        
+        .file-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-panel h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .status-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+        
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .status-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #667eea;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(102, 126, 234, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="{{url_for('index')}}" class="logo">Enhanced Detection</a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index')}}">Home</a></li>
+                <li><a href="{{ url_for('detect')}}">Detect</a></li>
+                <li><a href="{{ url_for('about')}}">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Lane Detection System</h1>
+            <p>Advanced lane detection with curve recognition and real-time feedback</p>
+        </div>
+
+        <div class="main-content">
+            <div class="video-section">
+                <div class="video-container">
+                    <img src="{{ url_for('video_feed') }}" alt="Lane Detection Feed" id="video-feed">
+                </div>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Initializing lane detection...</p>
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <h3>Controls</h3>
+                
+                <div class="control-group">
+                    <label>Live Camera</label>
+                    <button class="btn" onclick="startLiveDetection()">Start Live Detection</button>
+                </div>
+                
+                <div class="control-group">
+                    <label>Upload Video</label>
+                    <input type="file" class="file-input" id="video-file" accept="video/*">
+                    <button class="btn btn-secondary" onclick="uploadVideo()">Upload & Process</button>
+                </div>
+                
+                <div class="control-group">
+                    <label>Detection Mode</label>
+                    <button class="btn btn-secondary" onclick="toggleMode()">Switch to Object Detection</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-panel">
+            <h3>Detection Status</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-value" id="fps">--</div>
+                    <div class="status-label">FPS</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="mode">LANE</div>
+                    <div class="status-label">Mode</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="status">Ready</div>
+                    <div class="status-label">Status</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="frames">0</div>
+                    <div class="status-label">Frames</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Performance monitoring
+        function updatePerformance() {
+            fetch('/performance')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('fps').textContent = data.current_fps ? data.current_fps.toFixed(1) : '--';
+                    document.getElementById('mode').textContent = data.detection_mode ? data.detection_mode.toUpperCase() : '--';
+                    document.getElementById('status').textContent = data.lane_detection_available ? 'Ready' : 'Loading';
+                    document.getElementById('frames').textContent = data.total_frames || '0';
+                })
+                .catch(error => {
+                    console.error('Error fetching performance data:', error);
+                });
+        }
+
+        // Start live detection
+        function startLiveDetection() {
+            showLoading();
+            fetch('/set_source', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'source=live&mode=lane'
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    alert('Live detection started!');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                alert('Error starting live detection: ' + error);
+            });
+        }
+
+        // Upload video
+        function uploadVideo() {
+            const fileInput = document.getElementById('video-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a video file first.');
+                return;
+            }
+            
+            showLoading();
+            const formData = new FormData();
+            formData.append('video', file);
+            formData.append('source', 'upload');
+            formData.append('mode', 'lane');
+            
+            fetch('/set_source', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    alert('Video uploaded and processing started!');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                alert('Error uploading video: ' + error);
+            });
+        }
+
+        // Toggle detection mode
+        function toggleMode() {
+            window.location.href = "{{ url_for('object_detection') }}";
+        }
+
+        // Show/hide loading
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('video-feed').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('video-feed').style.display = 'block';
+        }
+
+        // Update performance every 2 seconds
+        updatePerformance();
+        setInterval(updatePerformance, 2000);
+
+        // Hide loading after 3 seconds
+        setTimeout(hideLoading, 3000);
+    </script>
+</body>
+</html>

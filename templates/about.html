@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>de_TECT System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="about.css">
+  <link href="https://fonts.googleapis.com/css?family=Muli%7CRoboto:400,300,500,700,900" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/about.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='about.css') }}">
+</head>
+  <body>
+
+    <nav>
+        <div class="menu">
+          <div class="logo">
+            <a href="{{ url_for('index')}}">de_TECT</a>
+          </div>
+          <ul>
+            <li><a href="{{ url_for('index')}}">Home</a></li>
+            <li><a href="{{ url_for('detect')}}">Detect</a></li>
+            <li><a href="{{ url_for('about')}}">About</a></li>
+          </ul>
+        </div>
+      </nav>
+
+    <header>
+      <img src="LOGO1.jpg" alt="" class="">
+      <h1 class="tag name">About Us</h1>
+      <p class="tag location">Learn more about de_TECT</p>
+    </header>
+
+    <main class="flex">
+      <div class="card">
+        <h2>About Us</h2>
+        <p>At de_TECT, we offer a cutting-edge detection system that integrates object, lane, and curve recognition to enhance driving safety and precision. Our technology uses advanced computer vision and AI to provide real-time awareness of obstacles, lane markings, and road curves, supporting both driver assistance and autonomous driving solutions. With our system, you gain a smarter, safer driving experience on every journey</p>
+        </div>
+      <div class="card">
+        <h2>How the System works</h2>
+        <h3>Object Detection</h3>
+        <h4>Input</h4>
+        <p>The system takes images or video frames from cameras.</p>
+        <h4>Processing</h4>
+        <p>It uses machine learning models to identify and classify objects within the images </p>
+        <h4>Output</h4>
+        <p>The system provides information about the location, type, and sometimes the movement of detected objects (like vehicles, pedestrians, or traffic signs).</p>
+      
+        <h3>Lane and Curve Detection</h3>
+        <h4>Input</h4>
+        <p>The system takes images or video frames from cameras.</p>
+        <h4>Processing</h4>
+        <p>The system employs image processing techniques to detect lane markings on the road and the system analyzes the road curvature by detecting and interpreting lane markings and road features. </p>
+        <h4>Output</h4>
+        <p>The system identifies lane boundaries and can provide feedback on lane position, helping with lane-keeping and lane departure warnings. It also  provides information about the road’s curvature, aiding in steering adjustments and improving vehicle handling on curves.</p>
+        <p>In summary, open site in your browser; click on Get started to Detection page; Choose one option to continue; And use the navigation links to navigate to other pages.</p>
+      </div>
+
+  </body>
+  </html>

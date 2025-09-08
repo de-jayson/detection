@@ -1,0 +1,270 @@
+/* body{
+  background-image: url('t2.jpg');
+  background-size: cover;
+  background-position: center;
+  background: height 100px;
+  background-repeat: no-repeat;
+  margin: 0%;
+  height: 100vh;
+  width: 100%;
+  padding: 0%;}
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+::selection {
+  color: #000;
+  background: #fff;
+}
+nav {
+  position: fixed;
+  background: #1b1b1b;
+  width: 100%;
+  padding: 10px 0;
+  z-index: 12;
+}
+nav .menu {
+  max-width: 1250px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+.menu .logo a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 35px;
+  font-weight: 600;
+}
+.menu ul {
+  display: inline-flex;
+}
+.menu ul li {
+  list-style: none;
+  margin-left: 7px;
+}
+.menu ul li:first-child {
+  margin-left: 0px;
+}
+.menu ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+.menu ul li a:hover {
+  background: #fff;
+  color: black;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0%;
+  padding: 0%;
+}
+h1{
+  color: rgb(0, 0, 0);
+}
+h2{
+  color: #000000;
+}
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.section {
+  margin: 2rem 0;
+}
+
+section#about img, section#results img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 1rem;
+}
+
+#upload-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#upload-form input[type="file"] {
+  margin-bottom: 1rem;
+}
+
+button {
+  background: #000000;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #00e1ff;
+}
+
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .container {
+      width: 95%;
+  }
+
+  button {
+      width: 100%;
+  }
+} */
+
+body{
+  background-image: url('t1.jpg');
+  background-size: cover;
+  background-position: center;
+  background: height 100px;
+  background-repeat: no-repeat;
+  margin: 0%;
+  height: 100vh;
+  width: 100%;
+  padding: 0%;}
+
+nav {
+  position: fixed;
+  background: #1b1b1b;
+  width: 100%;
+  padding: 10px 0;
+  z-index: 12;
+}
+nav .menu {
+  max-width: 100%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+.menu .logo a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 35px;
+  font-weight: 600;
+}
+.menu ul {
+  display: inline-flex;
+}
+.menu ul li {
+  list-style: none;
+  margin-left: 7px;
+}
+.menu ul li:first-child {
+  margin-left: 0px;
+}
+.menu ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+.menu ul li a:hover {
+  background: #fff;
+  color: black;
+}
+
+header {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0%;
+  padding: 0%;
+}
+h1{
+  color: rgb(0, 0, 0);
+}
+h2{
+  color: #000000;
+}
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.section {
+  margin: 2rem 0;
+}
+
+section#about img, section#results img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 1rem;
+}
+
+#upload-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#upload-form input[type="file"] {
+  margin-bottom: 1rem;
+}
+
+button {
+  background: #000000;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #00e1ff;
+}
+
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .container {
+      width: 95%;
+  }
+
+  button {
+      width: 100%;
+  }
+}
