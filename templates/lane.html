@@ -304,10 +304,7 @@
                     <button class="btn btn-secondary" onclick="uploadVideo()">Upload & Process</button>
                 </div>
                 
-                <div class="control-group">
-                    <label>Detection Mode</label>
-                    <button class="btn btn-secondary" onclick="toggleMode()">Switch to Object Detection</button>
-                </div>
+                
             </div>
         </div>
 
@@ -391,23 +388,25 @@
             formData.append('source', 'upload');
             formData.append('mode', 'lane');
             
-            fetch('/set_source', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                hideLoading();
-                if (data.success) {
-                    alert('Video uploaded and processing started!');
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                hideLoading();
-                alert('Error uploading video: ' + error);
-            });
+            fetch('/set_source', { method: 'POST', body: formData })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        hideLoading();
+        if (data.success) {
+            alert('Video uploaded and processing started!');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        hideLoading();
+        alert('Error uploading video: ' + error);
+    });
         }
 
         // Toggle detection mode

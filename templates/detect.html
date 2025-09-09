@@ -97,8 +97,16 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 2rem;
-      margin-bottom: 3rem;
+      width: auto; 
     }
+
+
+    .center {
+      display: flex;
+      justify-content: center; /* center horizontally */
+      width: 100%;
+    }
+
     
     .card {
       background: rgba(30, 30, 50, 0.9);
@@ -226,6 +234,7 @@
       
       .cards-grid {
         grid-template-columns: 1fr;
+        
       }
       
       .container {
@@ -251,21 +260,17 @@
       <h1>Advanced Detection System</h1>
       <p>Advanced lane detection and object recognition with real-time performance monitoring</p>
     </div>
-
-    <div class="cards-grid">
+    <div class ="center">
+     <div class="cards-grid">
       <div class="card">
         <div class="card-icon">🚗</div>
         <h2>Lane Detection</h2>
         <p>Advanced lane detection with curve recognition, lane departure warnings, and real-time feedback. Perfect for autonomous driving assistance.</p>
         <a href="{{ url_for('lane_detection')}}" class="btn">Start Lane Detection</a>
       </div>
+    </div>
       
-      <div class="card">
-        <div class="card-icon">🎯</div>
-        <h2>Object Detection</h2>
-        <p>Real-time object detection using YOLOv8 with high accuracy and performance. Detect vehicles, pedestrians, and other objects instantly.</p>
-        <a href="{{ url_for('object_detection')}}" class="btn">Start Object Detection</a>
-      </div>
+      
     </div>
 
     <div class="performance-panel">

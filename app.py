@@ -1,5 +1,6 @@
  
-from flask import Flask, Response, render_template, request, redirect, url_for
+from flask import Flask, Response, render_template, request,jsonify, redirect, url_for
+from werkzeug.utils import secure_filename
 import cv2 as cv
 import numpy as np
 import random
@@ -7,6 +8,7 @@ from ultralytics import YOLO
 import os
 import io
 import time
+import threading
 from main import FindLaneLines  # Import for lane and curve detection
 from gtts import gTTS  # Google Text-to-Speech
 import pygame  # Library to play the sound
@@ -41,95 +43,116 @@ findLaneLines = FindLaneLines()
 video_source = 0  # Default to live camera
 detection_mode = 'lane'  # Default to lane detection
 
+def play_audio_async(text):
+    """
+    Generate and play audio feedback in a separate thread.
+    Prevents blocking the main video loop.
+    """
+    try:
+        tts = gTTS(text=text, lang='en')
+        audio_fp = io.BytesIO()
+        tts.write_to_fp(audio_fp)
+        audio_fp.seek(0)
+
+        pygame.mixer.music.load(audio_fp, 'mp3')
+        pygame.mixer.music.play()
+    except Exception as e:
+        print(f"Audio playback error: {e}")
+
+
 def generate_frames():
     cap = cv.VideoCapture(video_source)
     if not cap.isOpened():
         print("Cannot open video source")
         return
 
-    # Variable to track the last time audio was played
-    last_play_time = time.time()  # Initialize with the current time
-    feedback_messages =[ 
-        "Good lane Keeping",
-             "You're doing great, stay focused",
-             "Bad lane keeping",
-             "Execellent lane control, well done",
-             "You almost drift off, Good you're back on track ",
-             "Nice driving! Stay alert and keep up the good work",
-             "Your lane keeping is on point, keep going!"
-             "Watch out,you are getting too close to the lane boundary",
-             "You're swerving, try to maintain a straighter line",
-             "Caution! you're not staying centered in the lane"               
-                            ]
+    last_play_time = time.time()
+    frame_count = 0  # for throttling object detection
 
+    feedback_messages = [
+        "Good lane Keeping",
+        "You're doing great, stay focused",
+        "Bad lane keeping",
+        "Excellent lane control, well done",
+        "You almost drift off, good you're back on track",
+        "Nice driving! Stay alert and keep up the good work",
+        "Your lane keeping is on point, keep going!",
+        "Watch out, you are getting too close to the lane boundary",
+        "You're swerving, try to maintain a straighter line",
+        "Caution! you're not staying centered in the lane"
+    ]
 
     while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
+        try:
+            ret, frame = cap.read()
+            if not ret or frame is None:
+                print("End of video reached, stopping...")
+                cap.set(cv.CAP_PROP_POS_FRAMES, 0)  # restart video from beginning
+                continue
+                #exit loop instead of spamming errors
 
-        processed_frame = frame
+            processed_frame = frame
 
-        if detection_mode == 'lane':
-            processed_frame = findLaneLines.forward(frame)
-            lane_feedback = random.choice(feedback_messages)
-            # Check if 5 seconds have passed since the last audio play
-            if time.time() - last_play_time >= 5:  # 5 seconds delay
-                try:
-                    # Generate speech audio in-memory
-                    tts = gTTS(text=lane_feedback, lang='en')
-                    audio_fp = io.BytesIO()
-                    tts.write_to_fp(audio_fp)
-                    audio_fp.seek(0)
+            if detection_mode == 'lane':
+                processed_frame = findLaneLines.forward(frame)
 
-                    # Play the audio directly from memory
-                    pygame.mixer.music.load(audio_fp, 'mp3')
-                    pygame.mixer.music.play()
-
-                    # Update the last play time
+                if time.time() - last_play_time >= 5:  # every 5 sec
+                    lane_feedback = random.choice(feedback_messages)
+                    threading.Thread(
+                        target=play_audio_async,
+                        args=(lane_feedback,),
+                        daemon=True
+                    ).start()
                     last_play_time = time.time()
 
-                except Exception as e:
-                    print(f"Error playing audio: {e}")
+            elif detection_mode == 'object':
+                # Run detection every 3rd frame for speed
+                if frame_count % 3 == 0:
+                    detect_param = model.predict(source=[frame], conf=0.45, save=False)
+                    DP = detect_param[0].numpy()
 
-        elif detection_mode == 'object':
-            detect_param = model.predict(source=[frame], conf=0.45, save=False)
-            DP = detect_param[0].numpy()
+                    if len(DP) != 0:
+                        for i in range(len(detect_param[0])):
+                            boxes = detect_param[0].boxes
+                            box = boxes[i]
+                            clsID = box.cls.numpy()[0]
+                            conf = box.conf.numpy()[0]
+                            bb = box.xyxy.numpy()[0]
 
-            if len(DP) != 0:
-                for i in range(len(detect_param[0])):
-                    boxes = detect_param[0].boxes
-                    box = boxes[i]
-                    clsID = box.cls.numpy()[0]
-                    conf = box.conf.numpy()[0]
-                    bb = box.xyxy.numpy()[0]
+                            cv.rectangle(
+                                frame,
+                                (int(bb[0]), int(bb[1])),
+                                (int(bb[2]), int(bb[3])),
+                                detection_colors[int(clsID)],
+                                3,
+                            )
 
-                    cv.rectangle(
-                        frame,
-                        (int(bb[0]), int(bb[1])),
-                        (int(bb[2]), int(bb[3])),
-                        detection_colors[int(clsID)],
-                        3,
-                    )
+                            cv.putText(
+                                frame,
+                                class_list[int(clsID)],
+                                (int(bb[0]), int(bb[1]) - 10),
+                                cv.FONT_HERSHEY_COMPLEX,
+                                1,
+                                (255, 255, 255),
+                                2,
+                            )
 
-                    font = cv.FONT_HERSHEY_COMPLEX
-                    cv.putText(
-                        frame,
-                        class_list[int(clsID)],
-                        (int(bb[0]), int(bb[1]) - 10),
-                        font,
-                        1,
-                        (255, 255, 255),
-                        2,
-                    )
+                        processed_frame = frame
 
-                processed_frame = frame
+            frame_count += 1
 
-        ret, buffer = cv.imencode('.jpg', processed_frame)
-        frame = buffer.tobytes()
+            # Encode and yield
+            ret, buffer = cv.imencode('.jpg', processed_frame)
+            if not ret:
+                continue
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+        except Exception as e:
+            print(f"Error in generate_frames loop: {e}")
+            continue  # keep streaming alive even after errors
 
     cap.release()
 
@@ -154,29 +177,37 @@ def object_detection():
 def lane_detection():
     return render_template('lane.html')
 
+@app.route('/performance')
+def performance():
+    return {"status": "ok", "fps": 24}  # replace with real values later
+
+
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/set_source', methods=['POST'])
 def set_source():
-    global video_source, detection_mode
-    source = request.form.get('source')
-    detection_mode = request.form.get('mode')  # Get the mode (lane or object)
+    try:
+        source = request.form.get('source')
+        mode = request.form.get('mode')
 
-    if source == 'live':
-        video_source = 0  # Live camera, but only for lane detection
-        detection_mode = 'lane'  # Live feed is only used for lane detection
-    elif source == 'upload':
-        file = request.files['video']
-        if file:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-            file.save(file_path)
-            video_source = file_path  # Uploaded video
-            # Object detection mode is selected by the user via the mode field
-            
+        if 'video' in request.files:
+            file = request.files['video']
+            filename = secure_filename(file.filename)
+            filepath = os.path.join("uploads", filename)
+            file.save(filepath)
 
-    return redirect(url_for('detect'))
+            # Set video source
+            global video_source, detection_mode
+            video_source = filepath
+            detection_mode = mode or 'lane'
+
+            return jsonify(success=True, message="Video uploaded and processing started!")
+        else:
+            return jsonify(success=False, error="No video uploaded")
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
 
 
 if __name__ == '__main__':

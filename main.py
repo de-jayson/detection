@@ -13,6 +13,7 @@ Options:
 import numpy as np
 import matplotlib.image as mpimg
 import cv2
+import os
 from docopt import docopt
 from IPython.display import HTML, Video
 from moviepy.editor import VideoFileClip
@@ -58,10 +59,34 @@ class FindLaneLines:
         out_img = self.forward(img)
         mpimg.imsave(output_path, out_img)
 
-    def process_video(self, input_path, output_path):
-        clip = VideoFileClip(input_path)
-        out_clip = clip.fl_image(self.forward)
-        out_clip.write_videofile(output_path, audio=False)
+        def process_video(self, input_path, output_path):
+            if not os.path.exists(input_path):
+                raise FileNotFoundError(f"❌ Video not found: {input_path}")
+
+        # Open video
+        clip = VideoFileClip(input_path).resize(height=480)
+        target_fps = clip.fps if clip.fps else 24
+
+        # Video writer (OpenCV backend avoids freezes)
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+        out = cv2.VideoWriter(output_path, fourcc, target_fps,
+                              (int(clip.w * clip.resize(height=480).w / clip.w * clip.size[0]), int(480)))
+
+        # Process frame by frame
+        for frame in clip.iter_frames(fps=target_fps, dtype="uint8"):
+            try:
+                processed = self.forward(frame)
+            except Exception as e:
+                print(f"⚠️ Frame skipped: {e}")
+                processed = frame
+
+            # Ensure color format (MoviePy uses RGB, OpenCV needs BGR)
+            processed_bgr = cv2.cvtColor(processed, cv2.COLOR_RGB2BGR)
+            out.write(processed_bgr)
+
+        out.release()
+        print(f"✅ Video saved to {output_path}")
+
 
 def main():
     args = docopt(__doc__)
